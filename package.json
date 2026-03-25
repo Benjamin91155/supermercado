@@ -1,0 +1,35 @@
+{
+    "name":  "supermercado-el-negro",
+    "version":  "0.1.0",
+    "private":  true,
+    "scripts":  {
+                    "dev":  "next dev",
+                    "build":  "next build",
+                    "start":  "next start",
+                    "lint":  "next lint",
+                    "seed:admin":  "node scripts/seed-admin.cjs",
+                    "seed:products":  "node scripts/seed-products.cjs"
+                },
+    "dependencies":  {
+                         "bcryptjs":  "^2.4.3",
+                         "jsonwebtoken":  "^9.0.2",
+                         "mongoose":  "^8.13.2",
+                         "next":  "latest",
+                         "react":  "latest",
+                         "react-dom":  "latest",
+                         "zod":  "^3.24.2"
+                     },
+    "devDependencies":  {
+                            "@types/node":  "latest",
+                            "@types/react":  "latest",
+                            "@types/react-dom":  "latest",
+                            "@types/bcryptjs":  "^2.4.6",
+                            "@types/jsonwebtoken":  "^9.0.6",
+                            "autoprefixer":  "^10.4.19",
+                            "eslint":  "latest",
+                            "eslint-config-next":  "latest",
+                            "postcss":  "^8.4.38",
+                            "tailwindcss":  "^3.4.17",
+                            "typescript":  "latest"
+                        }
+}
