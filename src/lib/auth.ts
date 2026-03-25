@@ -6,7 +6,7 @@ import { ApiError } from "@/lib/api";
 import User, { type UserDocument } from "@/models/User";
 import type { AuthTokenPayload, PublicUser } from "@/types/api";
 
-const jwtSecret = process.env.JWT_SECRET;
+const jwtSecret = process.env.JWT_SECRET ?? "";
 const jwtExpiresIn = process.env.JWT_EXPIRES_IN ?? "7d";
 
 if (!jwtSecret) {
@@ -22,7 +22,7 @@ export async function verifyPassword(password: string, hash: string) {
 }
 
 export function signToken(payload: AuthTokenPayload) {
-  return jwt.sign(payload, jwtSecret, { expiresIn: jwtExpiresIn });
+  return jwt.sign(payload, jwtSecret as string, { expiresIn: jwtExpiresIn });
 }
 
 export function verifyToken(token: string) {
