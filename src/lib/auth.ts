@@ -1,13 +1,13 @@
 ﻿import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import jwt, { type Secret, type SignOptions } from "jsonwebtoken";
 import type { NextRequest } from "next/server";
 import { connectToDatabase } from "@/lib/db";
 import { ApiError } from "@/lib/api";
 import User, { type UserDocument } from "@/models/User";
 import type { AuthTokenPayload, PublicUser } from "@/types/api";
 
-const jwtSecret = process.env.JWT_SECRET ?? "";
-const jwtExpiresIn = process.env.JWT_EXPIRES_IN ?? "7d";
+const jwtSecret = (process.env.JWT_SECRET ?? "") as Secret;
+const jwtExpiresIn = (process.env.JWT_EXPIRES_IN ?? "7d") as SignOptions["expiresIn"];
 
 if (!jwtSecret) {
   throw new Error("JWT_SECRET no está definida en las variables de entorno.");
@@ -22,7 +22,7 @@ export async function verifyPassword(password: string, hash: string) {
 }
 
 export function signToken(payload: AuthTokenPayload) {
-  return jwt.sign(payload, jwtSecret as string, { expiresIn: jwtExpiresIn });
+  return jwt.sign(payload, jwtSecret, { expiresIn: jwtExpiresIn });
 }
 
 export function verifyToken(token: string) {
