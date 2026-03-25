@@ -8,16 +8,16 @@ import { requireAdmin } from "@/lib/auth";
 import Category from "@/models/Category";
 
 export type CategoryRouteProps = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
 export async function GET(request: NextRequest, { params }: CategoryRouteProps) {
   try {
     await connectToDatabase();
 
-    const idOrSlug = params.id;
+    const { id: idOrSlug } = await params;
     const category = isValidObjectId(idOrSlug)
       ? await Category.findById(idOrSlug)
       : await Category.findOne({ slug: idOrSlug });
@@ -45,7 +45,8 @@ export async function PUT(request: NextRequest, { params }: CategoryRouteProps) 
 
     const body = categoryUpdateSchema.parse(await parseJson(request));
 
-    const category = await Category.findById(params.id);
+    const { id } = await params;
+    const category = await Category.findById(id);
     if (!category) {
       throw new ApiError(404, "Categoría no encontrada.");
     }
@@ -82,7 +83,8 @@ export async function DELETE(request: NextRequest, { params }: CategoryRouteProp
     await requireAdmin(request);
     await connectToDatabase();
 
-    const category = await Category.findByIdAndDelete(params.id);
+    const { id } = await params;
+    const category = await Category.findByIdAndDelete(id);
     if (!category) {
       throw new ApiError(404, "Categoría no encontrada.");
     }

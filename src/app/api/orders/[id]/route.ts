@@ -6,9 +6,9 @@ import { requireAdmin, requireAuth } from "@/lib/auth";
 import Order from "@/models/Order";
 
 export type OrderRouteProps = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
 export async function GET(request: NextRequest, { params }: OrderRouteProps) {
@@ -16,7 +16,8 @@ export async function GET(request: NextRequest, { params }: OrderRouteProps) {
     const user = await requireAuth(request);
     await connectToDatabase();
 
-    const order = await Order.findById(params.id).populate("user", "name email role");
+    const { id } = await params;
+    const order = await Order.findById(id).populate("user", "name email role");
     if (!order) {
       throw new ApiError(404, "Pedido no encontrado.");
     }
@@ -72,7 +73,8 @@ export async function PUT(request: NextRequest, { params }: OrderRouteProps) {
       statusMap[String(rawStatus).toLowerCase()] ?? String(rawStatus);
 
     const body = orderStatusSchema.parse({ status: normalizedStatus });
-    const targetId = rawBody.orderId ?? params.id;
+    const { id } = await params;
+    const targetId = rawBody.orderId ?? id;
 
     const order = await Order.findById(targetId);
     if (!order) {
@@ -93,7 +95,8 @@ export async function DELETE(request: NextRequest, { params }: OrderRouteProps) 
     await requireAdmin(request);
     await connectToDatabase();
 
-    let targetId = params.id;
+    const { id } = await params;
+    let targetId = id;
     try {
       const body = (await request.json()) as { orderId?: string };
       if (body?.orderId) {

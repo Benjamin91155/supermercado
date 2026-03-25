@@ -7,16 +7,17 @@ import Product from "@/models/Product";
 import Category from "@/models/Category";
 
 export type ProductRouteProps = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
 export async function GET(request: NextRequest, { params }: ProductRouteProps) {
   try {
     await connectToDatabase();
 
-    const product = await Product.findById(params.id).populate("category");
+    const { id } = await params;
+    const product = await Product.findById(id).populate("category");
     if (!product) {
       throw new ApiError(404, "Producto no encontrado.");
     }
@@ -55,7 +56,8 @@ export async function PUT(request: NextRequest, { params }: ProductRouteProps) {
 
     const body = productUpdateSchema.parse(await parseJson(request));
 
-    const product = await Product.findById(params.id);
+    const { id } = await params;
+    const product = await Product.findById(id);
     if (!product) {
       throw new ApiError(404, "Producto no encontrado.");
     }
@@ -130,7 +132,8 @@ export async function DELETE(request: NextRequest, { params }: ProductRouteProps
     await requireAdmin(request);
     await connectToDatabase();
 
-    const product = await Product.findByIdAndDelete(params.id);
+    const { id } = await params;
+    const product = await Product.findByIdAndDelete(id);
     if (!product) {
       throw new ApiError(404, "Producto no encontrado.");
     }
