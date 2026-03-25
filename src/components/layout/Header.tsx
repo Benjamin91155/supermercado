@@ -13,7 +13,7 @@ import { useFavorites } from "@/context/FavoritesContext";
 const navLinks = [
   { href: "/", label: "Inicio" },
   { href: "/products", label: "Productos" },
-  { href: "/categories", label: "Categorías" },
+  { href: "/categories", label: "Categorias" },
   { href: "/offers", label: "Ofertas" },
   { href: "/about", label: "Sobre nosotros" },
   { href: "/contact", label: "Contacto" }
@@ -26,7 +26,7 @@ export function Header() {
   const { items: favoriteItems } = useFavorites();
 
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-100 bg-white/80 backdrop-blur">
+    <header className="z-30 border-b border-slate-100 bg-white/80 backdrop-blur md:sticky md:top-0">
       <div className="mx-auto flex max-w-6xl flex-col gap-3 px-6 py-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
@@ -122,3 +122,4 @@ export function Header() {
     </header>
   );
 }
+
