@@ -6,12 +6,14 @@ import { ApiError } from "@/lib/api";
 import User, { type UserDocument } from "@/models/User";
 import type { AuthTokenPayload, PublicUser } from "@/types/api";
 
-const jwtSecret = (process.env.JWT_SECRET ?? "") as Secret;
 const jwtExpiresIn = (process.env.JWT_EXPIRES_IN ?? "7d") as SignOptions["expiresIn"];
-
-if (!jwtSecret) {
-  throw new Error("JWT_SECRET no está definida en las variables de entorno.");
-}
+const getJwtSecret = () => {
+  const secret = process.env.JWT_SECRET ?? "";
+  if (!secret) {
+    throw new Error("JWT_SECRET no está definida en las variables de entorno.");
+  }
+  return secret as Secret;
+};
 
 export async function hashPassword(password: string) {
   return bcrypt.hash(password, 10);
@@ -22,11 +24,11 @@ export async function verifyPassword(password: string, hash: string) {
 }
 
 export function signToken(payload: AuthTokenPayload) {
-  return jwt.sign(payload, jwtSecret, { expiresIn: jwtExpiresIn });
+  return jwt.sign(payload, getJwtSecret(), { expiresIn: jwtExpiresIn });
 }
 
 export function verifyToken(token: string) {
-  return jwt.verify(token, jwtSecret) as AuthTokenPayload;
+  return jwt.verify(token, getJwtSecret()) as AuthTokenPayload;
 }
 
 export function getTokenFromRequest(request: NextRequest) {

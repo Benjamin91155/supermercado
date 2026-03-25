@@ -1,11 +1,5 @@
 ﻿import mongoose from "mongoose";
 
-const mongoUri = process.env.MONGODB_URI ?? "";
-
-if (!mongoUri) {
-  throw new Error("MONGODB_URI no está definida en las variables de entorno.");
-}
-
 type MongooseCache = {
   conn: typeof mongoose | null;
   promise: Promise<typeof mongoose> | null;
@@ -21,6 +15,11 @@ const globalCache = globalForMongoose.mongooseCache ?? { conn: null, promise: nu
 globalForMongoose.mongooseCache = globalCache;
 
 export async function connectToDatabase() {
+  const mongoUri = process.env.MONGODB_URI ?? "";
+  if (!mongoUri) {
+    throw new Error("MONGODB_URI no está definida en las variables de entorno.");
+  }
+
   if (globalCache.conn) {
     return globalCache.conn;
   }
